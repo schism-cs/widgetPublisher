@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <script>
+        async function loadEmbeds() {
+            const token = localStorage.getItem('firebaseToken');
+            const response = await fetch('/api/embeds', {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const embeds = await response.json();
+            
+            const container = document.getElementById('embeds-container');
+            container.innerHTML = embeds.map(embed => `
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">${embed.title}</h5>
+                        <iframe class="w-100" srcdoc="${embed.code.replace(/"/g, '&quot;')}" style="height: 600px;"></iframe>
+                        <div class="mt-2">
+                            <a href="/embed/${embed.id}" target="_blank" class="btn btn-sm btn-outline-primary">Embed URL</a>
+                            <button class="btn btn-sm btn-outline-danger" onclick="deleteEmbed('${embed.id}')">Delete</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function deleteEmbed(embedId) {
+            const token = localStorage.getItem('firebaseToken');
+            await fetch(`/api/embeds/${embedId}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            loadEmbeds();
+        }
+
+        window.onload = loadEmbeds;
+    </script>
+</head>
+<body class="bg-light">
+    <div class="container mt-5">
+        <h1 class="mb-4">Your Embeds</h1>
+        <button class="btn btn-primary mb-3" onclick="window.location.href='/create'">New Embed</button>
+        <div id="embeds-container"></div>
+    </div>
+</body>
+</html>

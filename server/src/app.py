@@ -86,7 +86,13 @@ def manage_embeds():
 def single_embed(embed_id):
     doc_ref = db.collection("embeds").document(embed_id)
     if request.method == "PUT":
-        doc_ref.update(request.json)
+        data = request.json
+        update_data = {
+            "title": data.get("title"),
+            "code": data.get("code"),
+            "modified": firestore.SERVER_TIMESTAMP,
+        }
+        doc_ref.update({k: v for k, v in update_data.items() if v is not None})
         return jsonify({"status": "updated"})
     elif request.method == "DELETE":
         doc_ref.delete()

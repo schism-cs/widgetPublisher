@@ -16,10 +16,11 @@
                 <div class="card mb-3">
                     <div class="card-body">
                         <h5 class="card-title">${embed.title}</h5>
-                        <iframe class="w-100" srcdoc="${embed.code.replace(/"/g, '&quot;')}" style="height: 600px;"></iframe>
+                        <iframe class="w-100" srcdoc="${embed.code.replace(/"/g, '"')}" style="height: 600px;"></iframe>
                         <div class="mt-2">
                             <a href="/embed/${embed.id}" target="_blank" class="btn btn-sm btn-outline-primary">Embed URL</a>
                             <button class="btn btn-sm btn-outline-danger" onclick="deleteEmbed('${embed.id}')">Delete</button>
+                            <button class="btn btn-sm btn-outline-secondary" onclick="editEmbed('${embed.id}', '${embed.title}', \`${embed.code.replace(/`/g, '\\`')}\`)">Edit</button>
                         </div>
                     </div>
                 </div>
@@ -35,6 +36,32 @@
             loadEmbeds();
         }
 
+        function editEmbed(embedId, title, code) {
+            document.getElementById('embed-id').value = embedId;
+            document.getElementById('embed-title').value = title;
+            document.getElementById('embed-code').value = code;
+            document.getElementById('edit-form').style.display = 'block';
+        }
+
+        async function updateEmbed() {
+            const embedId = document.getElementById('embed-id').value;
+            const title = document.getElementById('embed-title').value;
+            const code = document.getElementById('embed-code').value;
+            const token = localStorage.getItem('firebaseToken');
+
+            await fetch(`/api/embeds/${embedId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ title, code })
+            });
+
+            document.getElementById('edit-form').style.display = 'none';
+            loadEmbeds();
+        }
+
         window.onload = loadEmbeds;
     </script>
 </head>
@@ -43,6 +70,21 @@
         <h1 class="mb-4">Your Embeds</h1>
         <button class="btn btn-primary mb-3" onclick="window.location.href='/create'">New Embed</button>
         <div id="embeds-container"></div>
+
+        <div id="edit-form" style="display: none;">
+            <h3>Edit Embed</h3>
+            <input type="hidden" id="embed-id">
+            <div class="form-group">
+                <label for="embed-title">Title</label>
+                <input type="text" class="form-control" id="embed-title">
+            </div>
+            <div class="form-group">
+                <label for="embed-code">Code</label>
+                <textarea class="form-control" id="embed-code" rows="5"></textarea>
+            </div>
+            <button class="btn btn-success" onclick="updateEmbed()">Update</button>
+            <button class="btn btn-secondary" onclick="document.getElementById('edit-form').style.display='none'">Cancel</button>
+        </div>
     </div>
 </body>
 </html>

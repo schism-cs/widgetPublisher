@@ -1,3 +1,4 @@
 flask
+flask-cors
 firebase_admin
 python-dotenv

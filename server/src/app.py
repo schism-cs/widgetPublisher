@@ -1,5 +1,6 @@
 import os
 from flask import Flask, request, jsonify, render_template, make_response
+from flask_cors import CORS
 import firebase_admin
 from firebase_admin import credentials, firestore, auth
 from functools import wraps
@@ -8,6 +9,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 app = Flask(__name__)
+CORS(app)
 app.secret_key = os.urandom(24)
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 

@@ -13,7 +13,7 @@ app.config["TEMPLATES_AUTO_RELOAD"] = True
 
 
 # Initialize Firebase
-cred = credentials.Certificate("service-account-key.json")
+cred = credentials.Certificate("./service-account-key.json")
 firebase_admin.initialize_app(cred)
 db = firestore.client()
 

@@ -263,3 +263,7 @@ pyrightconfig.json
 
 # End of https://www.toptal.com/developers/gitignore/api/python,flask
 service-account-key.json
+
+frontend/.env.production
+
+frontend/.firebase/

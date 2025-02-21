@@ -1,18 +1,30 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Modal, Box, TextField, Button, Typography } from '@mui/material';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { Embed } from './Dashboard';
 
-interface NewEmbedModalProps {
+interface EmbedModalProps {
   open: boolean;
   onClose: () => void;
+  toEditEmbed: Embed | undefined;
 }
 
-const NewEmbedModal: React.FC<NewEmbedModalProps> = ({ open, onClose }) => {
+const EmbedModal: React.FC<EmbedModalProps> = ({ open, onClose, toEditEmbed }) => {
   const [title, setTitle] = useState('');
   const [htmlCode, setHtmlCode] = useState('');
+
+  useEffect(() => {
+    console.log(toEditEmbed)
+    if (toEditEmbed !== undefined) {
+      setTitle(toEditEmbed.title);
+      setHtmlCode(toEditEmbed.code);
+    }
+  }, [open])
+
   const handleSave = async () => {
     const token = localStorage.getItem('firebaseToken');
+
     try {
       const response = await fetch(process.env.REACT_APP_BACKEND_ENDPOINT + '/api/embeds', {
         method: 'POST',
@@ -22,16 +34,46 @@ const NewEmbedModal: React.FC<NewEmbedModalProps> = ({ open, onClose }) => {
         },
         body: JSON.stringify({ title, code: htmlCode })
       });
+
       if (!response.ok) {
         throw new Error('Failed to save embed');
       }
+
       toast.success('Embed saved successfully!');
       onClose();
+
     } catch (error) {
       console.error('Error saving embed:', error);
       toast.error('Error saving embed');
     }
   };
+
+  const handleEdit = async () => {
+    const token = localStorage.getItem('firebaseToken');
+
+    try {
+      const response = await fetch(process.env.REACT_APP_BACKEND_ENDPOINT + '/api/embeds/' + toEditEmbed?.id, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ id: toEditEmbed?.id, title: title, code: htmlCode })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update embed');
+      }
+
+      toast.success('Embed updated successfully!');
+      onClose();
+
+    } catch (error) {
+      console.error('Error updating embed:', error);
+      toast.error('Error updating embed');
+    }
+  };
+
 
   return (
     <Modal open={open} onClose={onClose}>
@@ -55,7 +97,7 @@ const NewEmbedModal: React.FC<NewEmbedModalProps> = ({ open, onClose }) => {
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => setHtmlCode(e.target.value)}
               margin="normal"
               multiline
-              rows={4}
+              rows={15}
               style={{ height: "100%", resize: "both" }}
             />
           </Box>
@@ -65,12 +107,12 @@ const NewEmbedModal: React.FC<NewEmbedModalProps> = ({ open, onClose }) => {
             </Box>
           </Box>
         </Box>
-        <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={handleSave}>
-          Save
+        <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={toEditEmbed !== undefined ? handleEdit : handleSave}>
+          {(toEditEmbed !== undefined) ? "Update" : "Save"}
         </Button>
       </Box>
     </Modal>
   );
 };
 
-export default NewEmbedModal;
+export default EmbedModal;

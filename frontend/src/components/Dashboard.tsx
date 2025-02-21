@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import NewEmbedModal from './NewEmbedModal';
+import EmbedModal from './NewEmbedModal';
 import { Container, Grid, Card, CardContent, Typography, Button, CardMedia, Box, Grid2 } from '@mui/material';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-type Embed = {
+import Icon from "@mui/material/Icon"
+
+export type Embed = {
   id: string;
   title: string;
   code: string;
@@ -12,7 +14,9 @@ type Embed = {
 
 const Dashboard = () => {
   const [embeds, setEmbeds] = useState<Embed[]>([]);
+
   const [open, setOpen] = useState(false);
+  const [toEditEmbed, setToEditEmbed] = useState<Embed>();
 
   useEffect(() => {
     const token = localStorage.getItem('firebaseToken');
@@ -69,13 +73,19 @@ const Dashboard = () => {
     }
   };
 
+  const editEmbed = (id: string) => {
+    setToEditEmbed(embeds.find(e => e.id === id))
+    setOpen(true);
+  };
+
   const onModalClose = () => {
     fetchEmbeds()
     setOpen(false)
+    setToEditEmbed(undefined);
   }
 
   return (
-    <Container disableGutters maxWidth="xl" sx={{ width: "100%", height:"100vh"}}>
+    <Container disableGutters maxWidth="xl" sx={{ width: "100%" }}>
       <Box display={'flex'} alignItems={"center"} justifyContent={"space-between"} width={"100%"}>
         <Typography variant="h4" component="h1" gutterBottom>
           Dashboard
@@ -85,30 +95,36 @@ const Dashboard = () => {
         </Button>
       </Box>
 
-      <NewEmbedModal open={open} onClose={onModalClose} />
+      <EmbedModal open={open} onClose={onModalClose} toEditEmbed={toEditEmbed} />
+
       <Grid2 container spacing={3}>
         {embeds.map(embed => (
-          <Grid2  key={embed.id}>
+          <Grid2 key={embed.id}>
             <Card>
               <CardMedia
                 component="iframe"
                 src={process.env.REACT_APP_BACKEND_ENDPOINT + "/embed/" + embed.id}
-                height="200"
+                height="150"
                 title={embed.title}
               />
               <CardContent>
                 <Typography variant="h6" component="h2">
                   {embed.title}
                 </Typography>
-                <Button onClick={() => getEmbedURL(embed.id)} variant="contained" color="primary">
-                  Get URL
-                </Button>
-                <Button onClick={() => getEmbedCode(embed.code)} variant="outlined" color="primary">
-                  Get Code
-                </Button>
-                <Button onClick={() => deleteEmbed(embed.id)} variant="outlined" color="secondary">
-                  Delete
-                </Button>
+                <Box display={"flex"} justifyContent={"space-between"}>
+                  <Button onClick={() => getEmbedURL(embed.id)} variant="outlined" color="primary">
+                    <Icon>link</Icon>
+                  </Button>
+                  <Button onClick={() => getEmbedCode(embed.code)} variant="outlined" color="primary">
+                    <Icon>code</Icon>
+                  </Button>
+                  <Button onClick={() => editEmbed(embed.id)} variant="contained" color="primary">
+                    <Icon>edit</Icon>
+                  </Button>
+                  <Button onClick={() => deleteEmbed(embed.id)} variant="contained" color="error">
+                    <Icon>delete</Icon>
+                  </Button>
+                </Box>
               </CardContent>
             </Card>
           </Grid2>

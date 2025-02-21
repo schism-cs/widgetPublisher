@@ -101,15 +101,5 @@ def single_embed(embed_id):
         return jsonify({"status": "deleted"})
 
 
-@app.route("/dashboard", methods=["GET"])
-def dashboard():
-    return render_template("dashboard.html")
-
-
-@app.route("/create", methods=["GET"])
-def create_embed():
-    return render_template("create.html")
-
-
 if __name__ == "__main__":
     app.run(ssl_context="adhoc", port=5000)

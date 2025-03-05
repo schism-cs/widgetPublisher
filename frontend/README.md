@@ -2,45 +2,119 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Available Scripts
-
-In the project directory, you can run:
-
-### `yarn start`
-
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
-
-### `yarn test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `yarn build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `yarn eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+"STD;24h%Volume",
+    "STD;Accumulation_Distribution",
+    "STD;Advance%1Decline%1Line",
+    "STD;Advance%1Decline%1Ratio",
+    "STD;Advance_Decline_Ratio_Bars",
+    "STD;Arnaud%1Legoux%1Moving%1Average",
+    "STD;Aroon",
+    "STD;Average%Day%Range",
+    "STD;Average%1Directional%1Index",
+    "STD;Average_True_Range",
+    "STD;Awesome_Oscillator",
+    "STD;Balance%1of%1Power",
+    "STD;BBTrend",
+    "STD;Bollinger_Bands",
+    "STD;Bollinger_Bands_B",
+    "STD;Bollinger_Bands_Width",
+    "STD;Bollinger%1Bars",
+    "STD;Bull%Bear%Power",
+    "STD;Chaikin_Money_Flow",
+    "STD;Chaikin_Oscillator",
+    "STD;Chande%1Kroll%1Stop",
+    "STD;Chande_Momentum_Oscillator",
+    "STD;Chop%1Zone",
+    "STD;Choppiness_Index",
+    "STD;CCI",
+    "STD;Connors_RSI",
+    "STD;Coppock%1Curve",
+    "CorrelationCoefficient@tv-basicstudies",
+    "STD;Correlation_Coeff",
+    "STD;Cumulative%1Volume%1Delta",
+    "STD;Cumulative%1Volume%1Index",
+    "STD;DPO",
+    "STD;DMI",
+    "STD;Donchian_Channels",
+    "STD;DEMA",
+    "STD;EOM",
+    "STD;EFI",
+    "STD;ENV",
+    "STD;Fisher_Transform",
+    "STD;Gaps",
+    "STD;Historical_Volatility",
+    "STD;Hull%1MA",
+    "STD;Ichimoku%1Cloud",
+    "STD;Keltner_Channels",
+    "STD;Klinger%1Oscillator",
+    "STD;Know_Sure_Thing",
+    "STD;Least%1Squares%1Moving%1Average",
+    "STD;Linear_Regression",
+    "STD;MA%1Cross",
+    "STD;Mass%1Index",
+    "STD;McGinley%1Dynamic",
+    "STD;Median",
+    "STD;Momentum",
+    "STD;Money_Flow",
+    "MoonPhases@tv-basicstudies",
+    "STD;Moon%1Phases",
+    "STD;MACD",
+    "STD;EMA",
+    "STD;MA%Ribbon",
+    "STD;SMA",
+    "STD;WMA",
+    "STD;Multi-Time%Period%Charts",
+    "STD;Net%1Volume",
+    "STD;On_Balance_Volume",
+    "STD;Open%Interest",
+    "STD;PSAR",
+    "STD;Performance",
+    "STD;Pivot%1Points%1High%1Low",
+    "STD;Pivot%1Points%1Standard",
+    "STD;Price_Oscillator",
+    "STD;Price%1Target",
+    "PriceVolumeTrend@tv-basicstudies",
+    "STD;Price_Volume_Trend",
+    "STD;Rank_Correlation_Index",
+    "STD;ROC",
+    "STD;RCI_Ribbon",
+    "STD;RSI",
+    "STD;Relative_Vigor_Index",
+    "STD;Relative_Volatility_Index",
+    "STD;Relative%1Volume%1at%1Time",
+    "BookerIntradayPivots@tv-basicstudies",
+    "BookerKnoxvilleDivergence@tv-basicstudies",
+    "BookerMissedPivots@tv-basicstudies",
+    "BookerReversal@tv-basicstudies",
+    "STD;Rob%1Booker%1Ghost%1Pivots%1v2",
+    "STD;Divergence%1Indicator",
+    "STD;Seasonality",
+    "STD;SMI_Ergodic_Indicator_Oscillator",
+    "STD;SMI_Ergodic_Oscillator",
+    "STD;Smoothed%1Moving%1Average",
+    "STD;Stochastic",
+    "STD;SMI",
+    "STD;Stochastic_RSI",
+    "STD;Supertrend",
+    "STD;Technical%1Ratings",
+    "STD;Time%1Weighted%1Average%1Price",
+    "STD;Trading%1Sessions",
+    "STD;Trend%1Strength%1Index",
+    "STD;TEMA",
+    "STD;TRIX",
+    "STD;True%1Strength%1Indicator",
+    "STD;Ultimate_Oscillator",
+    "STD;UP_DOWN_Volume",
+    "STD;Visible%1Average%1Price",
+    "STD;Volatility_Stop",
+    "Volume@tv-basicstudies",
+    "STD;Volume%1Delta",
+    "STD;Volume%1Oscillator",
+    "STD;VWAP",
+    "STD;VWMA",
+    "STD;Vortex%1Indicator",
+    "STD;Williams_Alligator",
+    "STD;Whilliams_Fractals",
+    "STD;Willams_R",
+    "STD;Woodies%1CCI",
+    "STD;Zig_Zag"

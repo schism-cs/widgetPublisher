@@ -34,7 +34,7 @@ const EmbedModal: React.FC<EmbedModalProps> = ({ open, onClose, toEditEmbed }) =
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify({ title, code: htmlCode, extra_param_1_default: extraParam1, extra_param_2_default: extraParam2})
+        body: JSON.stringify({ title, code: htmlCode, extra_param_1_default: extraParam1, extra_param_2_default: extraParam2 })
       });
 
       if (!response.ok) {
@@ -119,7 +119,7 @@ const EmbedModal: React.FC<EmbedModalProps> = ({ open, onClose, toEditEmbed }) =
           </Box>
           <Box sx={{ flex: "2 1", ml: 2 }}>
             <Box sx={{ border: '1px solid #ccc', p: 2, mt: 1 }}>
-              <div dangerouslySetInnerHTML={{ __html: htmlCode }} />
+              <div dangerouslySetInnerHTML={{ __html: htmlCode.replace("[[widget_ep_1]]", extraParam1).replace("[[widget_ep_2]]", extraParam2) }} />
             </Box>
           </Box>
         </Box>

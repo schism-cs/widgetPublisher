@@ -7,6 +7,8 @@ from firebase_admin import credentials, firestore, auth
 from functools import wraps
 from dotenv import load_dotenv
 
+from utils import format_code
+
 load_dotenv()
 
 app = Flask(__name__)
@@ -19,32 +21,6 @@ app.config["TEMPLATES_AUTO_RELOAD"] = True
 cred = credentials.Certificate("./service-account-key.json")
 firebase_admin.initialize_app(cred)
 db = firestore.client()
-
-
-def format_code(
-    document,
-    extra_param_1_override: str = None,
-    extra_param_2_override: str = None,
-) -> str:
-    html_code = None
-
-    if extra_param_1_override is not None:
-        html_code = document.get("code").replace(f"[[widget_ep_1]]", extra_param_1_override)
-    elif document.get("extra_param_1_default") is not None:
-        html_code = document.get("code").replace(
-            f"[[widget_ep_1]]", document.get("extra_param_1_default")
-        )
-    else:
-        html_code = document.get("code")
-
-    if extra_param_2_override is not None:
-        html_code = html_code.replace(f"[[widget_ep_2]]", extra_param_2_override)
-    elif document.get("extra_param_2_default") is not None:
-        html_code = html_code.replace(
-            f"[[widget_ep_2]]", document.get("extra_param_2_default")
-        )
-
-    return html_code
 
 
 # Authentication decorator
@@ -88,13 +64,8 @@ def show_embed(embed_id: str):
     if doc.exists:
         html_content: str = doc.to_dict().get("code", "")
 
-        print(f"ep1 {extra_param_1}, ep2 {extra_param_2}")
-        print(doc.to_dict())
-
         html_content = format_code(doc.to_dict(), extra_param_1, extra_param_2)
         
-        print(html_content)
-
         response = make_response(html_content)
         response.headers["Content-Type"] = "text/html"
         return response
@@ -112,7 +83,8 @@ def manage_embeds():
                 {
                     "id": doc.id,
                     "title": doc.get("title"),
-                    "code": format_code(doc),
+                    "code": doc.get("code"),
+                    "formatted_code": format_code(doc),
                     "created": doc.get("created"),
                     "extra_param_1_default": doc.get("extra_param_1_default"),
                     "extra_param_2_default": doc.get("extra_param_2_default"),

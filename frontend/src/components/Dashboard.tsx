@@ -1,16 +1,20 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import EmbedModal from './NewEmbedModal';
-import { Container, Grid, Card, CardContent, Typography, Button, CardMedia, Box, Grid2 } from '@mui/material';
+import { Container, Card, CardContent, Typography, Button, CardMedia, Box, Grid2 } from '@mui/material';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import Icon from "@mui/material/Icon"
-import { getAuth } from 'firebase/auth';
+
 
 export type Embed = {
   id: string;
   title: string;
   code: string;
+  formatted_code: string;
+  extra_param_1_default: string;
+  extra_param_2_default: string;
+  created: number;
 };
 
 const Dashboard = () => {

@@ -1,4 +1,5 @@
 import os
+from typing import Union
 from flask import Flask, request, jsonify, render_template, make_response
 from flask_cors import CORS
 import firebase_admin
@@ -18,6 +19,32 @@ app.config["TEMPLATES_AUTO_RELOAD"] = True
 cred = credentials.Certificate("./service-account-key.json")
 firebase_admin.initialize_app(cred)
 db = firestore.client()
+
+
+def format_code(
+    document,
+    extra_param_1_override: str = None,
+    extra_param_2_override: str = None,
+) -> str:
+    html_code = None
+
+    if extra_param_1_override is not None:
+        html_code = document.get("code").replace(f"[[widget_ep_1]]", extra_param_1_override)
+    elif document.get("extra_param_1_default") is not None:
+        html_code = document.get("code").replace(
+            f"[[widget_ep_1]]", document.get("extra_param_1_default")
+        )
+    else:
+        html_code = document.get("code")
+
+    if extra_param_2_override is not None:
+        html_code = html_code.replace(f"[[widget_ep_2]]", extra_param_2_override)
+    elif document.get("extra_param_2_default") is not None:
+        html_code = html_code.replace(
+            f"[[widget_ep_2]]", document.get("extra_param_2_default")
+        )
+
+    return html_code
 
 
 # Authentication decorator
@@ -48,14 +75,26 @@ def home():
         "messagingSenderId": os.getenv("FIREBASE_MESSAGING_SENDER_ID"),
         "appId": os.getenv("FIREBASE_APP_ID"),
     }
-    return render_template('login.html', firebase_config=firebase_config)
+    return render_template("login.html", firebase_config=firebase_config)
 
 
-@app.route("/embed/<embed_id>")
-def show_embed(embed_id):
+@app.get("/embed/<embed_id>")
+def show_embed(embed_id: str):
     doc = db.collection("embeds").document(embed_id).get()
+    
+    extra_param_1 = request.args.get('extra_param_1')
+    extra_param_2 = request.args.get('extra_param_2')
+    
     if doc.exists:
-        html_content = doc.to_dict().get("code", "")
+        html_content: str = doc.to_dict().get("code", "")
+
+        print(f"ep1 {extra_param_1}, ep2 {extra_param_2}")
+        print(doc.to_dict())
+
+        html_content = format_code(doc.to_dict(), extra_param_1, extra_param_2)
+        
+        print(html_content)
+
         response = make_response(html_content)
         response.headers["Content-Type"] = "text/html"
         return response
@@ -68,7 +107,19 @@ def show_embed(embed_id):
 def manage_embeds():
     if request.method == "GET":
         docs = db.collection("embeds").get()
-        return jsonify([{"id": doc.id, **doc.to_dict()} for doc in docs])
+        return jsonify(
+            [
+                {
+                    "id": doc.id,
+                    "title": doc.get("title"),
+                    "code": format_code(doc),
+                    "created": doc.get("created"),
+                    "extra_param_1_default": doc.get("extra_param_1_default"),
+                    "extra_param_2_default": doc.get("extra_param_2_default"),
+                }
+                for doc in docs
+            ]
+        )
 
     if request.method == "POST":
         data = request.json
@@ -78,6 +129,8 @@ def manage_embeds():
                 "title": data.get("title", "Untitled"),
                 "code": data["code"],
                 "created": firestore.SERVER_TIMESTAMP,
+                "extra_param_1_default": data.get("extra_param_1_default", None),
+                "extra_param_2_default": data.get("extra_param_2_default", None),
             }
         )
         return jsonify({"id": new_doc.id}), 201
@@ -93,12 +146,25 @@ def single_embed(embed_id):
             "title": data.get("title"),
             "code": data.get("code"),
             "modified": firestore.SERVER_TIMESTAMP,
+            "extra_param_1_default": data.get("extra_param_1_default", None),
+            "extra_param_2_default": data.get("extra_param_2_default", None),
         }
         doc_ref.update({k: v for k, v in update_data.items() if v is not None})
         return jsonify({"status": "updated"})
     elif request.method == "DELETE":
         doc_ref.delete()
         return jsonify({"status": "deleted"})
+
+@app.route("/api/embeds/add_field/<field_name>", methods=["GET"])
+@firebase_auth
+def add_field_to_embeds(field_name: str):
+    docs = db.collection("embeds").get()
+    for doc in docs:
+        doc.reference.update({
+            field_name: ""
+        })
+    return jsonify({"status": "updated"})    
+    
 
 
 if __name__ == "__main__":

@@ -5,6 +5,7 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import Icon from "@mui/material/Icon"
+import { getAuth } from 'firebase/auth';
 
 export type Embed = {
   id: string;
@@ -22,29 +23,28 @@ const Dashboard = () => {
     const token = localStorage.getItem('firebaseToken');
     if (!token) {
       window.location.href = '/login';
-    } else {
+    }
+    else {
       fetchEmbeds();
     }
   }, []);
 
-  const fetchEmbeds = async () => {
-    try {
-      const token = localStorage.getItem('firebaseToken');
-      const response = await fetch(process.env.REACT_APP_BACKEND_ENDPOINT + '/api/embeds', {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        },
-        method: "GET"
-      });
-      if (!response.ok) {
-        throw new Error('Failed to fetch embeds');
-      }
-      const data = await response.json();
-      setEmbeds(data);
-    } catch (error) {
+  const fetchEmbeds = () => {
+    const token = localStorage.getItem('firebaseToken');
+    fetch(process.env.REACT_APP_BACKEND_ENDPOINT + 'api/embeds', {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      },
+      method: "GET"
+    }).then(response => {
+      if (!response.ok) throw new Error('Failed to fetch embeds');
+
+      const data = response.json().then(json => setEmbeds(json));
+    }).catch(error => {
       console.error('Error fetching embeds:', error);
-    }
-  };
+
+    });
+  }
 
   const getEmbedURL = (code: string) => {
     navigator.clipboard.writeText(process.env.REACT_APP_BACKEND_ENDPOINT + "/embed/" + code);
